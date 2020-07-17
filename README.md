@@ -78,6 +78,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## 掘金学习 nestjs
 [https://juejin.im/post/5d4bb09af265da03f233b92c](https://juejin.im/post/5d4bb09af265da03f233b92c)
+[https://juejin.im/user/5a5ff3e16fb9a01c9526215f/posts](https://juejin.im/user/5a5ff3e16fb9a01c9526215f/posts)
 
 #### 如何使用脚手架命令生成特征模块
 
