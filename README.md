@@ -84,8 +84,22 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 > 创建模块 nest g module cats
 
-> 创建控制器 nest g module cats
+> 创建控制器 nest g controller cats
 
 > 创建服务(供应者) nest g service cat
 
+> 创建过滤器 nest g filter cat
+
 #### 20200717 17:30 看到 动态模块
+
+#### 中间件
+ctx 接收 request 和 response 对象和管道函数 next()
+若没有结束request-response循环，即必须调用next函数将控制权交给下一个中间函数
+
+
+#### 异常过滤器
+- 20200720 18:14 看到继承
+
+#### 继承
+
+

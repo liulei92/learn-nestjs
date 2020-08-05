@@ -1,3 +1,8 @@
+/*
+ * @Description: 
+ * @Date: 2020-08-05 17:48:02
+ * @Author: LeiLiu
+ */
 import { Controller, Get, Query } from '@nestjs/common';
 import { DogsService } from '../dogs/dogs.service'
 import test from '../test'
@@ -12,8 +17,9 @@ export class PandasController {
     return 'this is pandas'
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   @Get('share1')
-  getShareText1(@Query('text') text: string) {
+  getShareText1(@Query('text') text: string)  {
     // return DDogsService.shareText(text);
     return this.dogsService.shareText(text)
   }
