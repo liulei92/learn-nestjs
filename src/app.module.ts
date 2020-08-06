@@ -8,6 +8,7 @@ import { DogsModule } from './dogs/dogs.module'; // 特征模块
 import { PandasModule } from './pandas/pandas.module'; // 
 
 import { UtilsModule } from './common/utils/utils.module' // global 全局模块（提供全局service，其余模块不需要单独imports）
+// import { UploadModule } from './common/upload/upload.module';
 import { FileModule } from './file/file.module'
 
 import { LoggerMiddleware, Logger } from './middlewares/test.middleware'
@@ -19,7 +20,7 @@ import { LoggerMiddleware, Logger } from './middlewares/test.middleware'
 })
 export class AppModule implements NestModule {
   // MiddlewareConsumer是一个辅助类
-  configure(comsumer: MiddlewareConsumer) {
+  configure(comsumer: MiddlewareConsumer): void {
     comsumer
       .apply(LoggerMiddleware, Logger) // 多中间件
       // 排除
