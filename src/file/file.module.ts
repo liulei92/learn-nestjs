@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Module, BadRequestException } from '@nestjs/common';
 import { FileController } from './file.controller';
 import { FileService } from './file.service';
@@ -6,6 +7,8 @@ import dayjs = require('dayjs');
 import { diskStorage } from 'multer';
 import * as nuid from 'nuid';
 import * as fs from 'fs';
+
+import { MulterConfigService } from './multerConfig.service';
 
 export const checkDirAndCreate = (filePath: string): void => {
   console.log(filePath)
@@ -27,58 +30,61 @@ const audio = ['mp3', 'wav', 'wave', 'ogg'];
 
 @Module({
   imports:[
-    MulterModule.register({
-      storage: diskStorage({
-        // 配置文件上传后的文件夹路径
-        destination: (req, file, cb) => {
-          console.log(file)
-          // 根据上传的文件类型将图片视频音频和其他类型文件分别存到对应英文文件夹
-          const mimeType = file.mimetype.split('/')[1];
-          let temp = 'other';
-          image.filter(item => item === mimeType).length > 0
-            ? (temp = 'image')
-            : '';
-          video.filter(item => item === mimeType).length > 0
-            ? (temp = 'video')
-            : '';
-          audio.filter(item => item === mimeType).length > 0
-            ? (temp = 'audio')
-            : '';
-          const filePath = `fileUpload/${temp}/${dayjs().format(
-            'YYYY-MM-DD',
-          )}`;
-          checkDirAndCreate(filePath); // 判断文件夹是否存在，不存在则自动生成
-          return cb(null, `./${filePath}`);
-        },
-        filename: (req, file, cb) => {
-          console.log(file)
-          // 在此处自定义保存后的文件名称
-          const fileType = file.originalname.split('.');
-          const filename = `${nuid.next()}.${fileType[fileType.length - 1]}`;
-          return cb(null, filename);
-        },
-      }), 
-      fileFilter(req, file, cb) {
-        console.log(file)
-        const mimeType = file.mimetype.split('/')[1].toLowerCase();
-        let temp = 'other';
-        image.filter(item => item === mimeType).length > 0
-          ? (temp = 'image')
-          : '';
-        video.filter(item => item === mimeType).length > 0
-          ? (temp = 'video')
-          : '';
-        audio.filter(item => item === mimeType).length > 0
-          ? (temp = 'audio')
-          : '';
-        console.log(temp)
-        if (temp === 'other') {
-          return cb(new BadRequestException('文件格式错误！'), false);
-        }
-        return cb(null, true);
-      },
-    }),
-
+    // MulterModule.register({
+    //   storage: diskStorage({
+    //     // 配置文件上传后的文件夹路径
+    //     destination: (req, file, cb) => {
+    //       console.log(req.body)
+    //       // 根据上传的文件类型将图片视频音频和其他类型文件分别存到对应英文文件夹
+    //       const mimeType = file.mimetype.split('/')[1];
+    //       let temp = 'other';
+    //       image.filter(item => item === mimeType).length > 0
+    //         ? (temp = 'image')
+    //         : '';
+    //       video.filter(item => item === mimeType).length > 0
+    //         ? (temp = 'video')
+    //         : '';
+    //       audio.filter(item => item === mimeType).length > 0
+    //         ? (temp = 'audio')
+    //         : '';
+    //       const filePath = `fileUpload/${temp}/${dayjs().format(
+    //         'YYYY-MM-DD',
+    //       )}`;
+    //       checkDirAndCreate(filePath); // 判断文件夹是否存在，不存在则自动生成
+    //       return cb(null, `./${filePath}`);
+    //     },
+    //     filename: (req, file, cb) => {
+    //       // 在此处自定义保存后的文件名称
+    //       const fileType = file.originalname.split('.');
+    //       const filename = `${nuid.next()}.${fileType[fileType.length - 1]}`;
+    //       return cb(null, filename);
+    //     },
+    //   }), 
+    //   fileFilter(req, file, cb) {
+    //     console.log(req)
+    //     const mimeType = file.mimetype.split('/')[1].toLowerCase();
+    //     let temp = 'other';
+    //     image.filter(item => item === mimeType).length > 0
+    //       ? (temp = 'image')
+    //       : '';
+    //     video.filter(item => item === mimeType).length > 0
+    //       ? (temp = 'video')
+    //       : '';
+    //     audio.filter(item => item === mimeType).length > 0
+    //       ? (temp = 'audio')
+    //       : '';
+    //     console.log(temp)
+    //     // if (temp === 'other') {
+    //     //   return cb(new BadRequestException('文件格式错误！'), false);
+    //     // }
+    //     return cb(null, true);
+    //   },
+    // }),
+    // 异步
+    MulterModule.registerAsync({
+      // 服务配置
+      useClass: MulterConfigService,
+    })
   ],
   controllers: [FileController],
   providers: [FileService]
@@ -94,3 +100,9 @@ export class FileModule {}
 
 // nestjs 文件上传 包含service
 // https://www.urcloud.co/archives/13/
+
+// NestJS File Streaming
+// https://github.com/davidschuette/nestjs-file-streaming
+
+// 流合并
+// https://www.jianshu.com/p/bfaad1323a4c

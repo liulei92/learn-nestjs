@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- <link rel="stylesheet" href="//unpkg.com/element-ui@2.13.2/lib/theme-chalk/index.css"> -->
+  <!-- <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <!-- <script src="//unpkg.com/vue/dist/vue.js"></script> -->
+  <!-- <script src="//unpkg.com/element-ui@2.13.2/lib/index.js"></script> -->
+  <style>
+    .progress-bar {
+      width: 300px;
+      height: 20px;
+      border-radius: 15px;
+      background-color: #e2e2e2;
+      margin: 10px 0;
+    }
+
+    #progress {
+      width: 0%;
+      height: 20px;
+      border-radius: 15px;
+      background-color: #40a9ff;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <input type="file" id="testFile">
+  </div>
+  <div class="progress-bar">
+    <div id="progress">0%</div>
+  </div>
+  <div>
+    <button onclick="upload()">上传</button>
+  </div>
+
+  <!-- <div id="app">
+    <el-upload
+      class="upload-demo"
+      action="http://127.0.0.1:3000/api/file/upload"
+      :on-preview="handlePreview"
+      :on-remove="handleRemove"
+      :before-remove="beforeRemove"
+      multiple
+      :limit="3"
+      :on-exceed="handleExceed"
+      :file-list="fileList">
+      <el-button size="small" type="primary">点击上传</el-button>
+      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+    </el-upload>
+  </div> -->
+
+  <script>
+    $(() => { })
+
+    function upload() {
+      var fd = new FormData();
+      fd.append("file", document.getElementById('testFile').files[0]);
+      console.log(fd)
+      $.ajax({
+        url: 'http://127.0.0.1:3000/api/file/test',
+        type: 'POST',
+        contentType: false, // "multipart/form-data"
+        cache: false,
+        processData: false,
+        data: fd,
+        xhr: function () {
+          myXhr = $.ajaxSettings.xhr();
+          if (myXhr.upload) { // check if upload property exists 
+            myXhr.upload.addEventListener('progress', function (e) {
+              var loaded = e.loaded;//已经上传大小情况
+              var tot = e.total;//附件总大小
+              var per = Math.floor(100 * loaded / tot).toFixed(2);
+              $("#progress").html(per + "%");//设置进度显示百分比
+              $("#progress").css("width", per + "%"); //设置完成的进度条宽度
+
+            }, false); // for handling the progress of the upload
+          }
+          return myXhr;
+        },
+        success: function (data) {
+          console.log(data);
+          console.log("上传成功!!!!");
+        },
+        error: function () {
+          console.log("上传失败！");
+        }
+      });
+    }
+
+
+
+    // function uploadProgress(evt) {
+    //   if (evt.lengthComputable) {
+    //     var percent = Math.round(evt.loaded * 100 / evt.total);
+
+    //     document.getElementById('progress').innerHTML = percent.toFixed(2) + '%';//设置进度显示百分比
+    //     document.getElementById('progress').style.width = percent.toFixed(2) + '%';//设置完成的进度条宽度
+    //   }
+    //   else {
+    //     document.getElementById('progress').innerHTML = 'unable to compute';
+    //   }
+    // }
+    // function uploadComplete(env) {
+    //   console.log(env)
+    // }
+    // function uploadFailed(env) {
+    //   console.log(env)
+    // }
+    // function uploadCanceled(env) {
+    //   console.log(env)
+    // }
+    // function upload() {
+    //   var fd = new FormData();
+    //   fd.append("file", document.getElementById('testFile').files[0]);
+    //   var xhr = new XMLHttpRequest();
+    //   xhr.upload.addEventListener("progress", uploadProgress, false);
+    //   xhr.addEventListener("load", uploadComplete, false);
+    //   xhr.addEventListener("error", uploadFailed, false);
+    //   xhr.addEventListener("abort", uploadCanceled, false);
+    //   xhr.open("POST", "http://127.0.0.1:3000/api/file/upload");//修改成自己的接口
+    //   xhr.send(fd);
+    // }
+
+
+
+    // var fd = new FormData();
+    // fd.append("file", document.getElementById('testFile').files[0]);
+    // axios({
+    //     method:"post",
+    //     url:"http://127.0.0.1:3003/useasync/uploadFile",
+    //     data: fd,
+    //     onUploadProgress:this.uploadProgress
+    // }).then(res=>{
+    //     console.log(res);
+    // }).catch(err=>{
+    //     console.log(err);
+    // })
+    // uploadProgress(evt){
+    //   if (evt.lengthComputable) {
+    //       var percent = Math.round(evt.loaded * 100 / evt.total);
+
+    //       document.getElementById('progress').innerHTML = percent.toFixed(2) + '%';//设置进度显示百分比
+    //       document.getElementById('progress').style.width = percent.toFixed(2) + '%';//设置完成的进度条宽度
+    //   }
+    //   else {
+    //       document.getElementById('progress').innerHTML = 'unable to compute';
+    //   }
+    // }
+
+
+    var Main = {
+      data() {
+        return {
+          fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
+        };
+      },
+      methods: {
+        handleRemove(file, fileList) {
+          console.log(file, fileList);
+        },
+        handlePreview(file) {
+          console.log(file);
+        },
+        handleExceed(files, fileList) {
+          this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+        },
+        beforeRemove(file, fileList) {
+          return this.$confirm(`确定移除 ${ file.name }？`);
+        }
+      }
+    }
+    // var Ctor = Vue.extend(Main)
+    // new Ctor().$mount('#app')
+  </script>
+</body>
+
+</html>

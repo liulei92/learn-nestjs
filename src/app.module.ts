@@ -1,4 +1,8 @@
+import { resolve } from 'path';
 import { Module, NestModule, RequestMethod ,MiddlewareConsumer } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { ConfigModule } from '@nestjs/config';
+
 import { AppController } from './app.controller';
 import { CatsController } from './cats/cats.controller';
 import { AppService } from './app.service';
@@ -14,7 +18,19 @@ import { FileModule } from './file/file.module'
 import { LoggerMiddleware, Logger } from './middlewares/test.middleware'
 
 @Module({
-  imports: [UtilsModule, DogsModule, PandasModule, FileModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: process.env.STATIC_PATH || resolve(__dirname, '../public'),
+      exclude: ['/api*', '/fileUpload/**/*'],
+    }),
+    UtilsModule,
+    DogsModule,
+    PandasModule,
+    FileModule
+  ],
   controllers: [AppController, CatsController],
   providers: [AppService, CatsService],
 })
